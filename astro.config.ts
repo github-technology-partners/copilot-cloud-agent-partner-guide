@@ -2,6 +2,5 @@ import { defineConfig } from 'astro/config'
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://github-technology-partners.github.io',
-  base: '/copilot-cloud-agent-partner-guide/',
+  site: 'https://solid-adventure-1q5k94v.pages.github.io',
 })
