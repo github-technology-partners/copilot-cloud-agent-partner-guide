@@ -1,0 +1,39 @@
+---
+---
+
+<section class="mb-6" id="worked-example">
+  <h2>5. Worked example: from external event to merged PR</h2>
+  <p>
+    The example below is vendor-neutral. Substitute the partner system, event, and rendering details for the specific integration.
+  </p>
+
+  <h3>Scenario</h3>
+  <p>
+    A partner observability product detects that an HTTP endpoint in the customer's web service is returning a 500 due to a null-reference error. The runbook ordinarily would page an engineer, who would write the fix. Instead, the partner offers a <strong>"Send fix to Copilot"</strong> button that the on-call can click.
+  </p>
+
+  <h3>Sequence</h3>
+  <ol>
+    <li>Partner backend receives the alert webhook from its own product.</li>
+    <li>Partner backend looks up the customer's connected GitHub identity and decrypts the user-to-server token.</li>
+    <li>Partner backend assembles a prompt that includes the error class, stack trace, source file, and a link back to the alert.</li>
+    <li>Partner backend POSTs to <code>/agents/repos/{'{owner}'}/{'{repo}'}/tasks</code> with the assembled prompt, <code>base_ref</code> set to the customer's release branch, and <code>create_pull_request: true</code>.</li>
+    <li>Partner backend stores the returned <code>task_id</code> alongside the alert.</li>
+    <li>Partner backend subscribes (or already subscribes) to <code>pull_request</code> webhooks for the repository through its GitHub App.</li>
+    <li>When the agent's PR is opened, the App receives a <code>pull_request.opened</code> webhook. The integration correlates the head ref or body content back to the task ID and updates the alert in the partner UI to "Fix proposed" with a link to the PR.</li>
+    <li>If the PR merges, the partner product marks the alert resolved and attaches the merge commit SHA to the post-incident record.</li>
+  </ol>
+
+  <h3>Example prompt</h3>
+  <div class="highlight">
+    <pre><code>The /api/checkout endpoint is returning a 500 with NullReferenceException
+at OrderService.ProcessAsync (line 142 of src/orders/OrderService.cs).
+This started after the v4.2.1 deploy at 09:14 UTC.
+
+Please:
+- Add a null guard around the new payment provider lookup.
+- Cover the new branch with a unit test using the existing fixtures.
+- Keep the change minimal; do not touch unrelated logic.
+- Reference incident INC-4821 in the PR description.</code></pre>
+  </div>
+</section>

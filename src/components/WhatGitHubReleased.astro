@@ -1,0 +1,52 @@
+---
+---
+
+<section class="mb-6" id="what-github-released">
+  <h2>2. What GitHub just released</h2>
+  <p>
+    Copilot cloud agent has been available for some time as an interactive feature on github.com and in the IDE. The May 2026 release exposes the same agent over a <strong>public REST surface</strong> so it can be triggered from any system, not only from a GitHub UI.
+  </p>
+
+  <h3>Core endpoints (public preview)</h3>
+  <div class="overflow-auto">
+    <table>
+      <thead>
+        <tr>
+          <th>Endpoint</th>
+          <th>Method</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>/agents/repos/{'{owner}'}/{'{repo}'}/tasks</code></td>
+          <td><span class="Label Label--success">POST</span></td>
+          <td>Start a new cloud agent task in a repository.</td>
+        </tr>
+        <tr>
+          <td><code>/agents/repos/{'{owner}'}/{'{repo}'}/tasks</code></td>
+          <td><span class="Label Label--accent">GET</span></td>
+          <td>List tasks in a repository.</td>
+        </tr>
+        <tr>
+          <td><code>/agents/repos/{'{owner}'}/{'{repo}'}/tasks/{'{task_id}'}</code></td>
+          <td><span class="Label Label--accent">GET</span></td>
+          <td>Fetch a single task and its current state.</td>
+        </tr>
+        <tr>
+          <td><code>/agents/tasks</code></td>
+          <td><span class="Label Label--accent">GET</span></td>
+          <td>List all tasks visible to the authenticated user.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="mt-3">
+    Official documentation: <a href="https://docs.github.com/en/rest/agent-tasks/agent-tasks?apiVersion=2026-03-10" class="Link">REST API endpoints for agent tasks</a>
+  </p>
+
+  <div class="flash flash-warn mt-3">
+    <strong>Preview caveat:</strong> These endpoints are in public preview and subject to breaking changes. Partners should plan for response schema evolution as the API moves toward GA.
+  </div>
+</section>

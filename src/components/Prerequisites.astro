@@ -1,0 +1,36 @@
+---
+---
+
+<section class="mb-6" id="prerequisites">
+  <h2>3. Prerequisites and plan eligibility</h2>
+  <p>
+    The capability is not on for every customer by default. Before a partner integration can succeed against a given organization, <strong>three things have to be true</strong>.
+  </p>
+
+  <h3>Copilot plan</h3>
+  <p>
+    Copilot cloud agent is available with Copilot Pro, Copilot Pro+, Copilot Business, and Copilot Enterprise. At preview launch, the Agent Tasks REST API is callable by <strong>Copilot Business</strong> and <strong>Copilot Enterprise</strong> users. Coverage for Copilot Pro and Pro+ is on the roadmap.
+  </p>
+
+  <h3>Organization enablement</h3>
+  <p>
+    For Copilot Business and Copilot Enterprise, cloud agent is <strong>disabled by default</strong>. An organization owner (or, where the org is owned by an enterprise, an enterprise admin) must turn it on via policy. Repository administrators can also opt specific repositories out.
+  </p>
+
+  <h3>User permissions on the target repository</h3>
+  <p>
+    The user whose token authorizes the API call must have <strong>write access</strong> to the repository&mdash;the same threshold as delegating work to the agent from the GitHub UI.
+  </p>
+
+  <h3>Partner checklist before calling the API</h3>
+  <p>Before issuing the POST, verify:</p>
+  <ol>
+    <li>The connected GitHub account has a Copilot Business or Enterprise seat.</li>
+    <li>The org or enterprise admin has enabled cloud agent.</li>
+    <li>The target repository is not in the opt-out list.</li>
+    <li>The connected user has write access.</li>
+  </ol>
+  <p>
+    Surfacing actionable error states for each of these is the <strong>single highest-leverage UX investment</strong> in this integration.
+  </p>
+</section>

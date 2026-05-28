@@ -1,0 +1,39 @@
+---
+---
+
+<section class="mb-6" id="operating-the-integration">
+  <h2>7. Operating the integration</h2>
+
+  <h3>Rate limits</h3>
+  <p>
+    The Agent Tasks endpoints inherit GitHub's REST API rate-limit framework, evaluated <strong>per the authenticating user</strong>. Partners running fleet-wide automations should design for the per-user budget rather than assuming a global pool, and should consider sharding work across the set of connected users where the customer has authorized more than one.
+  </p>
+
+  <h3>Error handling</h3>
+  <ul>
+    <li><code>401 / 403</code> &mdash; Token invalid, revoked, or missing Copilot entitlement. Surface a "reconnect GitHub" state to the customer admin.</li>
+    <li><code>404</code> on the repo &mdash; Cloud agent disabled at the org level, the repository opted out, or the user lacks write access. Distinguish these in the UI.</li>
+    <li><code>422</code> on POST &mdash; Malformed prompt or invalid <code>base_ref</code>. Validate input before sending.</li>
+    <li><code>5xx</code> &mdash; Transient. Retry with jitter; do not loop tightly.</li>
+  </ul>
+
+  <h3>Recommendations for observability</h3>
+  <ul>
+    <li>Task ID, task state transitions, time-to-completion, and final PR URL.</li>
+    <li>Originating event ID (incident, deploy, ticket) so the loop can be reconstructed end-to-end.</li>
+    <li>Outcome: merged, closed without merging, or abandoned. This dataset is the basis for showing ROI to the customer.</li>
+  </ul>
+
+  <h3>Recommendations for partner UIs</h3>
+  <ul>
+    <li>A clearly labelled action (<strong>"Send to Copilot"</strong>, not just "Fix") so users understand what is being triggered.</li>
+    <li>The exact prompt that will be sent, editable before submission for the first few weeks of a customer's adoption.</li>
+    <li>A live status indicator that reflects the agent's state, deep-linked to the GitHub task and PR.</li>
+    <li>A history view of past tasks per customer, with outcome metrics.</li>
+  </ul>
+
+  <h3>Design for lifecycle states of a task</h3>
+  <p>
+    Various states will be represented in a task and should be accounted for in the respective UI representation. For tasks needing human review, link to the <code>html_url</code> property of the task object. For references on current states supported, review the <a href="https://docs.github.com/en/rest/agent-tasks/agent-tasks?apiVersion=2026-03-10#get-a-task-by-repo" class="Link">response schema documentation</a>.
+  </p>
+</section>

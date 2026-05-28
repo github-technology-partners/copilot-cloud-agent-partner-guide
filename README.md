@@ -1,6 +1,6 @@
-# template-astro
+# Copilot Cloud Agent: Partner Integration Guide
 
-A minimal [Astro](https://astro.build) + TypeScript starter template.
+A web-based guide for technical partners building integrations with the GitHub Copilot Cloud Agent Tasks REST API. Built with [Astro](https://astro.build) and styled with [Primer CSS](https://primer.style/css).
 
 ## Prerequisites
 
@@ -27,4 +27,5 @@ bun run dev
 
 - **Framework** — Astro (Vite under the hood)
 - **Language** — TypeScript (strict)
+- **Styling** — Primer CSS
 - **Linting** — ESLint + Prettier

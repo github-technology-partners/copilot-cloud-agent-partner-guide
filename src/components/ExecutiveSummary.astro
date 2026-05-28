@@ -1,0 +1,32 @@
+---
+---
+
+<section class="mb-6" id="executive-summary">
+  <h2>1. Executive summary</h2>
+  <p>
+    GitHub has opened up the Copilot cloud agent so it can be driven programmatically. Until now, partners could surface GitHub data and trigger workflows, but they could not delegate substantive coding work to GitHub from inside their own product. With the new <strong>Agent Tasks REST API</strong>, a partner application can hand Copilot a prompt and a repository, and Copilot will spin up its own development environment, make the changes, validate them, and optionally open a pull request&mdash;all without a human leaving the partner's UI.
+  </p>
+  <p>
+    For partners, this turns Copilot into a generic remediation and authoring back end that can be wired behind any product event: a failing deploy in Octopus, a regression detected by New Relic, a Jira ticket transitioning to <em>Ready for Dev</em>. The business outcome is straightforward. Partners can offer customers an end-to-end loop from signal to code change, on the customer's own GitHub repositories, using the customer's own Copilot entitlements, without building an in-house code-generation pipeline.
+  </p>
+
+  <h3>Integration model</h3>
+  <p>
+    The Tasks API is <strong>asynchronous and currently poll-based</strong>. A partner POSTs a task (prompt + repository + optional base ref), receives a task ID, and polls the task endpoint for state transitions (<code>queued → in_progress → completed</code>). There is no task-level webhook today. Partners designing real-time UX (progress indicators, status badges) should plan around a polling interval rather than event-driven callbacks.
+  </p>
+  <p>
+    Pull request creation is opt-in (<code>create_pull_request: true</code>). When enabled, the completed task includes a PR artifact that the partner can link to from their UI. When disabled, the agent still creates a branch with commits, which the partner or customer can inspect or promote to a PR independently.
+  </p>
+  <p>
+    <strong>Authentication</strong> currently requires a user access token (fine-grained PAT or OAuth user token). GitHub App installation tokens are not yet supported but are on the roadmap. This means every task runs on behalf of a specific user and consumes that user's Copilot entitlements. Fully automated, headless scenarios (scheduled jobs, fleet-wide scripts) are possible but require a designated user's credentials.
+  </p>
+
+  <h3>Business outcomes this unlocks</h3>
+  <ul>
+    <li>Convert support and incident signals into pull requests automatically, shortening MTTR and reducing engineer toil.</li>
+    <li>Add a credible "fix it" button to partner UIs without taking on the cost of building and operating an in-house code-generation pipeline.</li>
+    <li>Run fleet-wide changes (dependency bumps, framework migrations, policy compliance) on behalf of customers from a single script or scheduled job.</li>
+    <li>Stand up new repositories with scaffolding, CI, and policies pre-populated, driven from an internal developer portal.</li>
+    <li><strong>Keep the human reviewer in the loop.</strong> When PR creation is enabled, the agent's output flows through the customer's existing branch protection rules, code owners, and required status checks. The partner initiates the work; the customer's governance model controls what ships.</li>
+  </ul>
+</section>

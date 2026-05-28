@@ -1,0 +1,40 @@
+---
+---
+
+<section class="mb-6" id="security-governance">
+  <h2>6. Security and governance</h2>
+  <p>
+    Partners selling into security-conscious customers will be asked precise questions about how this integration behaves.
+  </p>
+
+  <h3>Identity and audit</h3>
+  <p>
+    Every task is attributed to a real GitHub user. The user must hold a Copilot Business or Copilot Enterprise seat and write access on the repository. The audit trail of who delegated each task lives in GitHub's existing audit log surfaces, not only in the partner system.
+  </p>
+
+  <h3>Code review remains mandatory</h3>
+  <p>
+    The agent's output is a pull request. Branch protection, required reviewers, code owners, signed commit requirements, and required status checks all continue to apply. The partner integration <strong>does not, and should not, bypass any of them</strong>.
+  </p>
+
+  <h3>Network egress from the agent</h3>
+  <p>
+    Copilot cloud agent runs in its own development environment. GitHub provides a firewall that, by default, allows the hosts the agent needs to reach GitHub plus a recommended allowlist for dependency resolution. Organization and repository administrators can tighten or relax this.
+  </p>
+  <div class="flash flash-warn mt-2 mb-3">
+    <strong>Important nuance:</strong> The firewall applies to processes started by the agent's Bash tool, but it does not apply to Model Context Protocol (MCP) servers or to commands executed by configured Copilot setup steps. If a partner integration relies on MCP servers configured by the customer, treat their network reach as a separate review item.
+  </div>
+
+  <h3>Token handling on the partner side</h3>
+  <ul>
+    <li>Store user-to-server tokens <strong>encrypted at rest</strong> with a customer-scoped key.</li>
+    <li>Refresh proactively; treat refresh failures as a connection error visible to the customer admin.</li>
+    <li>Provide a "Disconnect from GitHub" control that revokes the token and stops issuing tasks immediately.</li>
+    <li>Never log tokens or echo them into prompt content sent to the agent.</li>
+  </ul>
+
+  <h3>Prompt injection awareness</h3>
+  <p>
+    If the partner constructs prompts from external content (alert payloads, ticket bodies, commit messages, end-user input), treat that content as <strong>untrusted</strong>. Sanitize aggressively, prefer structured prompt templates over free-text concatenation, and never include partner-side secrets or customer credentials in the prompt.
+  </p>
+</section>

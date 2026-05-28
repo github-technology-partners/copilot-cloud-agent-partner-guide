@@ -1,0 +1,41 @@
+---
+---
+
+<section class="mb-6" id="authentication">
+  <h2>4. Authentication: the most important section</h2>
+  <p>
+    The Agent Tasks API <strong>only accepts user-to-server tokens</strong>. That is a deliberate design choice: every agent run is attributed to, and authorized by, a real GitHub user, so audit logs, commit signing, branch protection rules, and Copilot seat accounting all stay coherent.
+  </p>
+
+  <h3>Accepted token types</h3>
+  <ul>
+    <li><strong>Personal access tokens</strong>, both classic and fine-grained.</li>
+    <li><strong>OAuth app tokens</strong> issued through the standard GitHub OAuth web flow.</li>
+    <li><strong>GitHub App user-to-server tokens</strong>, issued by a GitHub App after a user completes the App's OAuth-style identification flow.</li>
+  </ul>
+
+  <h3>Not accepted (at preview)</h3>
+  <ul>
+    <li>GitHub App installation access tokens (server-to-server). Support is on the roadmap but is not available today.</li>
+    <li>Anonymous or unscoped requests.</li>
+  </ul>
+
+  <div class="flash mb-3">
+    <strong>Architectural implication:</strong> Partner integrations cannot run as "the app" acting on its own initiative. Every task must be tied to a connected human user. Plan the data model so that each customer workspace stores at least one connected GitHub identity (typically the user who installed the partner app), and route task creation through that identity's token. Add a fallback path for when that user revokes access or leaves the organization.
+  </div>
+
+  <h3>Recommended pattern: GitHub App with user-to-server identification</h3>
+  <p>
+    Partners authenticate via a GitHub App, which provides the partner a stable identity and fine-grained per-installation repository permissions. To call the Agent Tasks API the partner then asks each user to identify with the App, which produces a user-to-server token that the partner can present on agent task requests.
+  </p>
+
+  <h4>Practical configuration steps</h4>
+  <ol>
+    <li>Register a GitHub App under the partner organization. Provide a homepage URL and a callback URL for user identification.</li>
+    <li>Request the minimum App permissions you genuinely need (commonly: <code>Contents: read</code>, <code>Pull requests: read and write</code>, <code>Metadata: read</code>). The API authorizes the agent based on the user's permissions, but App permissions still gate other parts of the integration.</li>
+    <li>Request "user authorization (OAuth) during installation" to combine the install and authorization steps for the installing user. This does not affect other users; they authorize separately, typically initiated from the partner's UI.</li>
+    <li>Implement the standard GitHub identification redirect, exchange the code for a user-to-server access token, and store it encrypted, scoped to the user record in the partner database.</li>
+    <li>Refresh the user-to-server token before expiry using the refresh token. Treat token expiration as a first-class error state in the partner UI.</li>
+    <li>Call the Agent Tasks endpoints using the user-to-server access token in the <code>Authorization</code> header.</li>
+  </ol>
+</section>
